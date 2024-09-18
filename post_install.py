@@ -20,7 +20,7 @@ def save_commit_info(file_path, data):
 	    json.dump(data, f, indent=4)
 
 info = get_commit_info()
-if sha:
+if info:
 	install_path = os.path.dirname(os.path.abspath(__file__))
 	install_path = os.path.join(install_path, "data")
 	file_path = os.path.join(install_path, 'netspawn-commit-info.json')

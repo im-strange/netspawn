@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
-from setuptools.command.install import install as _install
+from setuptools.command.install import install as install
 import subprocess
 
-class install(_install):
+class get_commit_info(install):
     def run(self):
         _install.run(self)
         post_install_script = os.path.join(os.path.dirname(__file__), 'post_install.py')
@@ -13,7 +13,7 @@ setup(
     version='1.0.0',
 	py_modules=["netspawn"],
     packages=find_packages(),
-    cmdclass={'install': install},
+    cmdclass={'install': get_commit_info},
     entry_points={
         'console_scripts': [
             'spawn=netspawn.cli:main',
