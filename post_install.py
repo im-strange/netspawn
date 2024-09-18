@@ -19,12 +19,13 @@ def save_commit_info(file_path, data):
 	with open(file_path, 'w') as f:		
 	    json.dump(data, f, indent=4)
 
-if __name__ == "__main__":
-    info = get_commit_info()
-    if sha:
-    	filename = "netspawn/data/netspawn-commit-info.json"
-    	file_path = path(filename)
-        save_commit_info(file_path, info)
-        print(f"[netspawn] commit info saved to {file_path}")
-    else:
-        print("[netspawn] commit info failed to save")
+info = get_commit_info()
+if sha:
+	install_path = os.path.dirname(os.path.abspath(__file__))
+	install_path = os.path.join(install_path, "data")
+	file_path = os.path.join(install_path, 'netspawn-commit-info.json')
+
+    save_commit_info(file_path, info)
+    print(f"[netspawn] commit info saved to {file_path}")
+else:
+    print("[netspawn] commit info failed to save")
