@@ -85,6 +85,9 @@ def update_package():
 			print(f"[{toolname}] package updated successfully!")
 		except Exception as e:
 			print(f"[{toolname}] {e}")
+	finally:
+		info_file = path("data/sha_version.txt")
+		subprocess.run(f"rm {info_file}")
 
 
 def get_sha_version():
