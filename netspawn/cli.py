@@ -78,6 +78,7 @@ def update_package():
 		print(f"[{toolname}] package updated successfully!")
 	except Exception as e:
 		print(f"[{toolname}] {e}")
+		print(f"[{toolname}] try running 'pip install git+https://github.com/im-strange/netspawn.git'")
 
 def get_repo_version():
 	filename = "data/netspawn-commit-info.json"

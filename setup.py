@@ -4,7 +4,7 @@ import subprocess
 
 class install(_install):
     def run(self):
-        _install.run(self)t
+        _install.run(self)
         subprocess.call(['python3', 'post_install.py'])
 
 setup(
