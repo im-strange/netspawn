@@ -89,7 +89,9 @@ def update_package():
 
 def get_sha_version():
 	try:
-		info_file = path("data/sha_version.txt")
+		info_file = path("data/sha_version.txt")		
+		subprocess.run(f"rm {info_file}")
+		
 		with open(info_file) as file:
 			info = [i.strip() for i in file.readlines()][0]
 			return info
