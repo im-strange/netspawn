@@ -27,7 +27,7 @@ def main():
 		install_path = os.path.join(install_path, "data")
 		file_path = os.path.join(install_path, 'netspawn-commit-info.json')
 
-	    save_commit_info(file_path, info)
-	    print(f"[netspawn] commit info saved to {file_path}")
+		save_commit_info(file_path, info)
+		print(f"[netspawn] commit info saved to {file_path}")
 	else:
-	    print("[netspawn] commit info failed to save")
+		print("[netspawn] commit info failed to save")
