@@ -22,6 +22,7 @@ RESET = '\033[0m'
 toolname = "netspawn"
 
 try:
+	import pkg_resources
 	import subprocess
 	import argparse
 	import requests
@@ -80,15 +81,21 @@ def update_package():
 		print(f"[{toolname}] {e}")
 		print(f"[{toolname}] try running 'pip install git+https://github.com/im-strange/netspawn.git'")
 
-def get_repo_version():
-	file_path = os.path.join(os.path.dirname(__file__), "data")
-	file_path = os.path.join(os.path.dirname(__file__), "netspawn-commit-info.json")
+def get_sha_version():
+	package_name = "netspawn"
+	try:
+		dist = pkg_resources.get_distribution(package_name)
+		package_dir = dist.location
+		git_dir = os.path.join(package_dir, package_name, ".git")
 
-	with open(file_path) as file:
-		info = json.load(file)
-	sha_version = info["sha"]
-	commit_date = info["commit"]["committer"]["date"]
-	return sha_version, commit_date
+		if os.path.isdir(git_dir):
+			sha = subprocess.check_output("git rev-parse HEAD".split(), cwd=os.path.dirname(git_dir))
+			return sha
+		else:
+			return None
+	except Exception as e:
+		print(f"[{toolname}] {e}")
+		exit()
 
 # main function
 def main():
@@ -143,10 +150,8 @@ def main():
 		exit()
 
 	if args.version:
-		sha_version, commit_date = get_repo_version()
-		print(f"Netspawn")
-		print(f"{' '*2}commit-version: {sha_version}")
-		print(f"{' '*5}commit-date: {commit_date}")
+		sha_version = get_sha_version()
+		print(f"SHA-Version: Netspawn {sha_version}")
 		exit()
 
 	if args.type == "proxy":
