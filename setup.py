@@ -1,10 +1,18 @@
 from setuptools import setup, find_packages
+from setuptools.command.install import install as _install
+import subprocess
+
+class install(_install):
+    def run(self):
+        _install.run(self)t
+        subprocess.call(['python3', 'post_install.py'])
 
 setup(
     name='netspawn',
     version='1.0.0',
 	py_modules=["netspawn"],
     packages=find_packages(),
+    cmdclass={'install': install},
     entry_points={
         'console_scripts': [
             'spawn=netspawn.cli:main',
