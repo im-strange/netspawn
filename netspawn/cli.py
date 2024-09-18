@@ -91,7 +91,7 @@ def get_sha_version():
 	try:
 		info_file = path("data/sha_version.txt")		
 		subprocess.run(f"rm {info_file}")
-		
+
 		with open(info_file) as file:
 			info = [i.strip() for i in file.readlines()][0]
 			return info
@@ -127,7 +127,7 @@ def is_latest():
 # main function
 def main():
 	# cli info
-	cli_version = "netspawn 1.0.0"
+	cli_version = "Netspawn 1.0.0"
 
 	proxy_file = path("data/proxies.json")
 	email_file = path("data/emails.txt")
