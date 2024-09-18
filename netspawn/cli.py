@@ -199,6 +199,7 @@ def main():
 		if is_latest():
 			print(f"[{toolname}] already up to date")
 		else:
+			print(f"[{toolname}] an update found")
 			update_package()
 		exit()
 
