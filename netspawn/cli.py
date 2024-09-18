@@ -80,7 +80,7 @@ def update_package():
 		print(f"[{toolname}] {e}")
 
 def get_repo_version():
-	filename = "netspawn-commit-info.json"
+	filename = "data/netspawn-commit-info.json"
 	file_path = path(filename)
 	with open(file_path) as file:
 		info = json.load(file)
