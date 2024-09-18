@@ -82,20 +82,39 @@ def update_package():
 		print(f"[{toolname}] try running 'pip install git+https://github.com/im-strange/netspawn.git'")
 
 def get_sha_version():
-	package_name = "netspawn"
 	try:
-		dist = pkg_resources.get_distribution(package_name)
-		package_dir = dist.location
-		git_dir = os.path.join(package_dir, package_name, ".git")
+		info_file = path("data/sha_version.txt")
+		with open(info_file) as file:
+			info = [i.strip() for i in file.readlines()][0]
+			return info
 
-		if os.path.isdir(git_dir):
-			sha = subprocess.check_output("git rev-parse HEAD".split(), cwd=os.path.dirname(git_dir))
-			return sha
-		else:
-			return None
-	except Exception as e:
-		print(f"[{toolname}] {e}")
-		exit()
+	except (FileNotFoundError, IndexError):
+		repo_url = "https://github.com/im-strange/netspawn.git"
+		repo_name = repo_url.split("/")[-1].replace(".git", "")
+		info_file = path("data/sha_version.txt")
+
+		subprocess.run(f"git clone -q {repo_url} {repo_name}".split())
+		sha = subprocess.check_output(
+			"git rev-parse HEAD".split(), cwd=repo_name, text=True
+		).split()[0]
+
+		with open(info_file, "w") as file:
+			file.write(sha)
+
+		subprocess.run(f"rm -rf {repo_name}".split())
+		return sha
+
+def is_latest():
+	installed_version = get_sha_version()
+	url = "https://api.github.com/repos/im-strange/netspawn/commits/main"
+	response = requests.get(url)
+	if response.status_code == 200:
+		info = response.json()
+		sha_version = info["sha"]
+		if installed_version == sha_version:
+			return True
+	else:
+		return None
 
 # main function
 def main():
@@ -151,7 +170,7 @@ def main():
 
 	if args.version:
 		sha_version = get_sha_version()
-		print(f"SHA-Version: Netspawn {sha_version}")
+		print(f"SHA-commit-version: Netspawn {sha_version}")
 		exit()
 
 	if args.type == "proxy":
@@ -171,7 +190,10 @@ def main():
 		exit()
 
 	if args.update:
-		update_package()
+		if is_latest():
+			print(f"[{toolname}] already up to date")
+		else:
+			update_package()
 		exit()
 
 if __name__ == "__main__":
