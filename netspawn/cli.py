@@ -79,7 +79,13 @@ def update_package():
 		print(f"[{toolname}] package updated successfully!")
 	except Exception as e:
 		print(f"[{toolname}] {e}")
-		print(f"[{toolname}] try running 'pip install git+https://github.com/im-strange/netspawn.git'")
+		print(f"[{toolname}] re-installing the package")
+		try:
+			result = subprocess.run(command, shell=True, text=True, capture_output=True, check=True)
+			print(f"[{toolname}] package updated successfully!")
+		except Exception as e:
+			print(f"[{toolname}] {e}")
+
 
 def get_sha_version():
 	try:
