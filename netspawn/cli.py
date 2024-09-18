@@ -56,11 +56,11 @@ def refresh_proxy(file_path):
 	response = requests.get(url)
 	data = json.loads(response.text)
 
-	print(f"[{toolname}] Writing file")
 	with open(output_file, "w") as file:
 		json.dump(data, file, indent=4)
 
 	print(f"[{toolname}] File saved to {output_file}")
+	print(f"[{toolname}] List successfully refreshed!")
 
 def display_proxy(proxies):
     print(f"{'Protocols':<15}{'Address':<20}{'Port'}")
