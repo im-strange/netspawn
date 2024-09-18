@@ -86,8 +86,11 @@ def update_package():
 		except Exception as e:
 			print(f"[{toolname}] {e}")
 	finally:
-		info_file = path("data/sha_version.txt")
-		subprocess.run(f"rm {info_file}")
+		try:
+			info_file = path("data/sha_version.txt")
+			subprocess.run(f"rm {info_file}")
+		except (FileNotFoundError, IndexError):
+			exit()
 
 
 def get_sha_version():
