@@ -5,7 +5,8 @@ import subprocess
 class install(_install):
     def run(self):
         _install.run(self)
-        subprocess.call(['python3', 'post_install.py'])
+        post_install_script = os.path.join(os.path.dirname(__file__), 'post_install.py')
+        subprocess.call(['python3', post_install_script])
 
 setup(
     name='netspawn',
