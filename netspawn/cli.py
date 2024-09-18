@@ -81,8 +81,9 @@ def update_package():
 		print(f"[{toolname}] try running 'pip install git+https://github.com/im-strange/netspawn.git'")
 
 def get_repo_version():
-	filename = "data/netspawn-commit-info.json"
-	file_path = path(filename)
+	file_path = os.path.join(os.path.dirname(__file__), "data")
+	file_path = os.path.join(os.path.dirname(__file__), "netspawn-commit-info.json")
+
 	with open(file_path) as file:
 		info = json.load(file)
 	sha_version = info["sha"]
