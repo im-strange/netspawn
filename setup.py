@@ -4,7 +4,7 @@ import subprocess
 
 class get_commit_info(install):
     def run(self):
-        _install.run(self)
+        install.run(self)
         post_install_script = os.path.join(os.path.dirname(__file__), 'post_install.py')
         subprocess.call(['python3', post_install_script])
 
