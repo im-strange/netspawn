@@ -22,12 +22,14 @@ RESET = '\033[0m'
 toolname = "netspawn"
 
 try:
-    import argparse
-    import requests
-    import random
-    import json
-    import time
-    import os
+	import subprocess
+	import argparse
+	import requests
+	import random
+	import json
+	import time
+	import sys
+	import os
 
 except ModuleNotFoundError as e:
     print(f"[{toolname}] {e}")
@@ -45,6 +47,20 @@ def get_proxy(proxy_file, count):
 
     return proxies
 
+def refresh_proxy(file_path):
+	url = "https://proxylist.geonode.com/api/proxy-list?limit=500&page=1&sort_by=lastChecked&sort_type=desc"
+	output_file = file_path
+
+	print(f"[{toolname}] Requesting new proxies")
+	response = requests.get(url)
+	data = json.loads(response.text)
+
+	print(f"[{toolname}] Writing file")
+	with open(output_file, "w") as file:
+		json.dump(data, file, indent=4)
+
+	print(f"[{toolname}] File saved to {output_file}")
+
 def display_proxy(proxies):
     print(f"{'Protocols':<15}{'Address':<20}{'Port'}")
     for proxy in proxies:
@@ -53,8 +69,15 @@ def display_proxy(proxies):
 def path(x):
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), x)
 
-def refresh_proxy():
-    pass
+def update_package():
+	command = "pip uninstall netspawn && pip install git+https://github.com/im-strange/netspawn.git"
+	print(f"[{toolname}] getting latest update from https://github.com/im-strange/netspawn.git")
+	print(f"[{toolname}] press enter to continue..")
+	try:
+		result = subprocess.run(command, shell=True, text=True, capture_output=True, check=True)
+		print(f"[{toolname}] package updated successfully!")
+	except Exception as e:
+		print(f"[{toolname}] {e}")
 
 # main function
 def main():
@@ -73,10 +96,16 @@ def main():
 				f"{' '*4}{'proxy':<15} spawn proxy",
 				f"{' '*4}{'email':<15} spawn email",
 				f"{' '*4}{'password':<15} spawn password",
+				f"\narguments:",
+				f"{' '*4}{'-t, --type':<15} set type of data to spawn",
+				f"{' '*4}{'-c, --count':<15} number of data to spawn [default=10]",
 				f"\ncommands:",
-				f"{' '*4}{'--count':<15} number of data to spawn",
-				f"{' '*4}{'--help':<15} show this help message",
-				f"{' '*4}{'--refresh':<15} refresh list",
+				f"{' '*4}{'-h, --help':<15} show this help message",
+				f"{' '*4}{'-r, --refresh':<15} refresh list",
+				f"{' '*4}{'--update':<15} update the package",
+				f"\nexamples:",
+				f"{' '*4}spawn --type proxy --count 10",
+				f"{' '*4}spawn --refresh",
 				]
 			for line in lines:
 				print(line)
@@ -89,11 +118,18 @@ def main():
 			exit(2)
 
 	parser = CustomArgumentParser()
-	parser.add_argument("type", type=str)
-	parser.add_argument("--version", action="store_true")
-	parser.add_argument("--count", type=int, default=10)
+	parser.add_argument("-t", "--type", type=str)
+	parser.add_argument("-v", "--version", action="store_true")
+	parser.add_argument("-r", "--refresh", action="store_true")
+	parser.add_argument("-c", "--count", type=int, default=10)
+	parser.add_argument("--update", action="store_true")
 
 	args = parser.parse_args()
+
+	if len(sys.argv) == 1:
+		print(f"[{toolname}] there is no any argument given")
+		print(f"[{toolname}] try 'spawn --help'")
+		exit()
 
 	if args.version:
 		print(f"{cli_version}")
@@ -108,9 +144,16 @@ def main():
 		count = args.count
 		emails = random.choices(get_file(email_file), k=count)
 		print(f"Emails:")
-		for index, email in enumerate(emails, start=1):
-			print(f"{' '*4}{index:<5}{email}")
+		for email in emails:
+			print(f"{' '*4}{email}")
 
+	if args.refresh:
+		refresh_proxy(proxy_file)
+		exit()
+
+	if args.update:
+		update_package()
+		exit()
 
 if __name__ == "__main__":
     main()
