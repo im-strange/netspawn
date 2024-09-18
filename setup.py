@@ -5,7 +5,6 @@ setup(
     version='1.0.0',
 	py_modules=["netspawn"],
     packages=find_packages(),
-    cmdclass={'install': CustomInstall},
     entry_points={
         'console_scripts': [
             'spawn=netspawn.cli:main',
