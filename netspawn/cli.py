@@ -79,6 +79,15 @@ def update_package():
 	except Exception as e:
 		print(f"[{toolname}] {e}")
 
+def get_repo_version():
+	filename = "netspawn-commit-info.json"
+	file_path = path(filename)
+	with open(file_path) as file:
+		info = json.load(file)
+	sha_version = info["sha"]
+	commit_date = info["commit"]["committer"]["date"]
+	return sha_version, commit_date
+
 # main function
 def main():
 	# cli info
@@ -132,7 +141,10 @@ def main():
 		exit()
 
 	if args.version:
-		print(f"{cli_version}")
+		sha_version, commit_date = get_repo_version()
+		print(f"Netspawn")
+		print(f"{' '*2}commit-version: {sha_version}")
+		print(f"{' '*5}commit-date: {commit_date}")
 		exit()
 
 	if args.type == "proxy":
